@@ -5,25 +5,31 @@ class Runform extends React.Component {
     constructor(props){
         super(props);
         this.state={
-           submitting: true,
            pace: false,
            time: false,
            distance: '',
            paceentry: '',
-           pacetime: ''
+           pacetime: '',
+           goalentry: '',
+           form: false
         }
     }
 
     handleClickPace = () => {
        this.setState({
-           pace: !this.state.pace,
-           time: false
+           pace: true,
+           time: false,
+           form: true,
+           pacetime: '',
+
        })
     }
     handleClickTime = () => {
         this.setState({
             pace: false,
-            time: !this.state.time
+            time: true,
+            form: true,
+            pacetime: '',
         })
      }
     updateDistance = e => {
@@ -38,14 +44,54 @@ class Runform extends React.Component {
     }
     handleSubmit = event => {
         event.preventDefault();
-        let min = parseInt(this.state.paceentry.split(':')[0]);
-        let sec = parseInt(this.state.paceentry.split(':')[1]);
-        let time = (min * 60) + sec;
-        let distance = parseInt(this.state.distance.split('m')[0] / 1600)
-        let totalSeconds = (distance * time);
-        let hours = Math.floor(totalSeconds / 3600);
-        let minutes = Math.floor(totalSeconds / 60);
-        let seconds = totalSeconds % 60;
+        const {pace, time, paceentry, goalentry, distance} = this.state;
+        let timetotal;
+        let hours;
+        let minutes;
+        let seconds;
+        let totalSeconds;
+        let distancetotal;
+        if(distance !== 'half-marathon' && distance !== 'marathon'){
+            distancetotal = parseFloat(distance.split('m')[0]) / 1600;
+        }else if(distance === 'half-marathon'){
+            distancetotal = 13.1;
+        }else{
+            distancetotal = 26.2;
+        }       
+        console.log(distancetotal)
+        if(pace){
+            timetotal = (parseInt(paceentry.split(':')[0]) * 60) + parseInt(paceentry.split(':')[1]); 
+            totalSeconds = (distancetotal * timetotal);
+            console.log(totalSeconds)
+        }
+        if(time){
+            let colons = 0;
+            for(var i=0; i<goalentry.length;i++){
+                if(goalentry[i] ===':'){
+                    colons++
+                }
+            }
+            if(colons === 1){
+                timetotal = (parseInt(goalentry.split(':')[0]) * 60) + parseInt(goalentry.split(':')[1]);   
+            }else{
+                timetotal = (parseInt(goalentry.split(':')[0]) * 3600) + (parseInt(goalentry.split(':')[1]) * 60) + parseInt(goalentry.split(':')[2]);   
+            }
+            totalSeconds = (timetotal / distancetotal);
+        }
+        if(totalSeconds > 3600){
+            hours = Math.floor(totalSeconds / 3600);
+            minutes = Math.floor((totalSeconds - (hours * 3600)) / 60)
+        }else{
+            minutes = Math.floor(totalSeconds / 60);
+            hours = 0;
+        }
+        seconds = Math.floor(totalSeconds % 60);
+        if(seconds < 10){
+            seconds = "0"+seconds;
+        }
+        if(hours !== 0 && minutes < 10){
+            minutes = "0"+minutes;
+        }
         if(hours !== 0){
             this.setState({
                 pacetime: hours + ':' + minutes + ':' + seconds,
@@ -59,26 +105,17 @@ class Runform extends React.Component {
     }
     
     render(){
-        const {submitting, pace, time, distance, paceentry, pacetime} = this.state;
+        const {submitting, pace, time, distance, paceentry, pacetime, goalentry, form} = this.state;
         return(
             <div className="paceform">
-                <form>
-                    <p>
-                        <label for="pace">Pace <br />
-                            <input id="pace" type="button" name="pace" value="Find a pace"  onClick={this.handleClickPace} />
-                        </label>
-                    </p>
-                    <p>
-                        <label for="time">Time <br />
-                            <input id="time" type="button" name="time" value="Set a goal time" onClick={this.handleClickTime} />
-                        </label>
-                    </p>
-                    
-                </form>
-                {pace &&
-                    <div>PACE FORM
+                    <div>
+                        <button id="pace" value=""  onClick={this.handleClickPace} >Get a time based on pace</button>
+                        <button id="time" value="" onClick={this.handleClickTime} >Get a pace for  your goal time</button>
+                    </div>
+                    <div>
+                    {form &&
                         <form onSubmit={this.handleSubmit}>
-                        <label for="distance">Distance: </label> <br />
+                        <label for="distance">Select Distance </label> 
                                     <select id="distance" defaultValue={distance} onChange={this.updateDistance}>
                                         <option value="select-format" disabled>Select distance</option>
                                         <option value="800m">800m</option>
@@ -90,18 +127,28 @@ class Runform extends React.Component {
                                         <option value="half-marathon">Half marathon</option>
                                         <option value="marathon">Marathon</option>
                                     </select><br />
-                        <label for="paceentry">Pace: </label> <br />
-                        <input id="paceentry" placeholder="Set your pace" type="text" name='paceentry' value={paceentry} onChange={this.handleChange} /><br />
-                        <input type='submit'  value='Get time'></input>
+                        {pace &&        
+                            <div>
+                                <label for="paceentry">Pace </label> 
+                                <input id="paceentry" placeholder="Set your pace" type="text" name='paceentry' value={paceentry} onChange={this.handleChange} /><br />
+                            </div>
+                        }
+                        {time &&
+                            <div>
+                                <label for="goalentry">Goal time </label> 
+                                <input id="goalentry" placeholder="Set your goal time" type="text" name='goalentry' value={goalentry} onChange={this.handleChange} /><br />
+                            </div>
+                        }
+                        <input type='submit'  value='Run it'></input>
                         </form>
-
+                    }
                     </div>
+                
+                {time && pacetime &&
+                    <div><h2>Your pace should be: {pacetime}</h2></div>
                 }
-                {time &&
-                    <div>TIME FORM</div>
-                }
-                {pacetime &&
-                    <p>{pacetime}</p>
+                {pace && pacetime &&
+                    <div><h2>Your time will be: {pacetime}</h2></div>
                 }
             </div>
               

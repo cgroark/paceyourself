@@ -4,8 +4,7 @@
   min-height: 100vh;
 }
 
-.App-header {
-  
+.App-header, h2 {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,11 +12,26 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
 .App-link {
   color: #61dafb;
 }
-
+button, label, select, input{
+  font-size: 20px;
+}
+button, input[type="submit"]{
+    background-color: #6FACA5;
+    border: solid 3px #282c34;
+    padding: 16px 28px;
+    margin: 20px 10px;
+}
+button:hover, input[type="submit"]:hover{
+  border: solid 3px #6FACA5;
+}
+label{
+  color: white;
+  display: inline-block;
+  margin: 20px 10px 10px 0;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
