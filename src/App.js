@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import run from './images/run.png';
 import './App.css';
 import Runform from './components/runform';

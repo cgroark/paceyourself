@@ -2,6 +2,7 @@
   text-align: center;
   background-color: #282c34;
   min-height: 100vh;
+  padding: 0 20px;
 }
 
 .App-header, h2 {
@@ -11,12 +12,15 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  padding-top: 50px;
+  font-family: 'Permanent Marker', cursive;
 }
 .App-link {
   color: #61dafb;
 }
 button, label, select, input{
   font-size: 20px;
+  font-family: 'Orbitron', sans-serif;
 }
 button, input[type="submit"]{
     background-color: #6FACA5;
@@ -27,10 +31,36 @@ button, input[type="submit"]{
 button:hover, input[type="submit"]:hover{
   border: solid 3px #6FACA5;
 }
+.required-alert{
+  background-color: #EFCD69;
+  width: 200px;
+  margin: 10px auto;
+  padding: 3px 3px 5px;
+}
+.required-alert p{
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+}
 label{
   color: white;
   display: inline-block;
   margin: 20px 10px 10px 0;
+}
+.result{
+  background-color: #C4C0B4;
+  max-width: 595px;
+  padding: 20px;
+  margin: auto;
+}
+.result h2 {
+  margin: 0;
+  color: #111;
+  padding: 0;
+}
+.result h2 span{
+  color: #E64B15;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 48px;
 }
 @keyframes App-logo-spin {
   from {
